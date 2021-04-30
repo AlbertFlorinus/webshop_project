@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Categories{% endblock %}
+{% block main %}
+
+<div class="d-flex flex-row justify-content-center mt-4">
+  <div class="w-75">
+    <h1 class="text-center">Kundvagn</h1>
+    <div id="cartView">
+{% if cart %}
+        <table class="table border mb-4">
+            <thead>
+                <tr>
+                    <th scope="col" class="border-bottom-0">Tillverkare</th>
+                    <th scope="col" class="border-bottom-0">Namn</th>
+                    <th scope="col" class="border-bottom-0">Storlek</th>
+                    <th scope="col" class="border-bottom-0">Pris</th>
+                    <th scope="col" class="border-bottom-0">F&auml;rg</th>
+                    <th scope="col" class="border-bottom-0">Antal</th>
+                    <th scope="col" class="border-bottom-0"></th>
+                </tr>
+            </thead>
+            <tbody>
+{% for item in cart %}
+              <tr class="bg-light" id="item_{{ item.id }}">
+                <td>{{ item.brand }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.size }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.color }}</td>
+                <td>
+                  <button class="cartButtons" onclick="removeFromCart({{ item.id }})" type="button" name="button"> <i class="fas fa-minus"></i></button>
+                  <span id="item_count_{{item.id}}">{{ 1 if item.count != None else item.count }}</span>
+                  <button class="cartButtons" onclick="addToCart({{ item.id }})" type="button" name="button"> <i class="fas fa-plus"></i></button>
+                </td>
+                <td>
+                  <button class="removeButton" onclick="removeAllFromCart({{ item.id }})" type="button" name="button"> <i class="fas fa-times">Remove</i> </button>
+                </td>
+              </tr>
+{% endfor %}
+            </tbody>
+        </table>
+
+        <table class="table w-25 border border-top-0">
+          <thead>
+              <tr class="text-center font-weight-bold">
+                  <th colspan="2">Best&auml;llningsinformation</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <th>Antal Produkter:</th>
+                  <td class="cart_size">{{ cart|length }}</td>
+              </tr>
+              <tr>
+                  <th>Summa:</th>
+                  <td>{{ price }}</td>
+              </tr>
+          </tbody>
+        </table>
+        <form id='placeOrder' class='w-50' method='post' action="index.cgi?action=checkout">
+          <input type="hidden" id="order_items" name="items" value="" />
+          <fieldset>
+            <legend>Kund</legend>
+            {% macro input(title, name, value='', type='text') -%}
+            <p class='cf-desc'></p><p>
+              <label for='form-element-{{name}}'>{{ title }}</label><br>
+              <input id='form-element-{{name}}' type='{{ type }}' class='form-control' name='{{ name }}'/>
+            </p>
+            {% endmacro %}
+
+            {{ input("Namn", "name")}}
+            {{ input("E-post", "email")}}
+            {{ input("Adress", "address")}}
+            {{ input("Postnummer", "zipcode")}}
+            {{ input("Ort", "town")}}
+            <p class='cf-desc'></p><p class='buttonbar'>
+              <span>
+                <input id='form-element-submit' type='submit' class='btn btn-lg btn-primary w-10' name='submit' value='Best&auml;ll' />
+                <button class="btn btn-danger btn-lg w-10 " onclick=emptyCart() type="button" name="button">T&ouml;m kundvagn</button>
+              </span>&nbsp;
+            {#</p><p class='buttonbar'>
+              <span>#}
+            </p>
+          </fieldset>
+        </form>
+{% else %}
+      <p>Din kundvagn inneh&aring;ller f&ouml;r tillf&auml;llet inga produkter.</p>
+{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

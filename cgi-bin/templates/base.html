@@ -1,0 +1,71 @@
+<!doctype html>
+<html class="htdocs">
+<head>
+  {% block head %}
+    <meta charset="utf-8">
+        <title>{{title}}</title>
+                <link rel="stylesheet" type="text/css" href="{{path}}css/style.css">
+                <link rel="stylesheet" type="text/css" href="{{path}}css/bootstrap.min.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta charset="utf-8">
+    <script src="{{path}}js/jquery.min.js" type="text/javascript"></script>
+    <script src="{{path}}js/js.cookie.js" type="text/javascript"></script>
+    <script src="{{path}}js/mine.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+
+
+  {% endblock %}
+</head>
+<body>
+
+<div class="header-wrap">
+    </div>
+
+
+
+<div class="navbar-wrap">
+  {% block navbar %}
+    <nav class="navbar navbar-expand-md navbar-light bg-light  border border-right-0 border-left-0 border-top-0">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav d-flex flew-row justify-content-around w-100">
+            <li class='nav-item active my-auto'><a class='nav-link' href='index.cgi'>Start</a></li><li class='nav-item  my-auto'><a class='nav-link' href='index.cgi?action=category'>Kategori</a></li>
+      <li class='nav-item w-50'>
+      <form class='nav-link' action='index.cgi?action=search' method='post'>
+        <input class='w-100' type='text' name='search' placeholder='S&ouml;k'>
+      </form></li>
+      {# users are not (yet) supported
+      <li class='nav-item my-auto'>
+        {% if user %}
+        {% import ''}
+        <a class='nav-link' href='index.cgi?action=login'>Logga in</a>
+        {% else %}
+        <a class='nav-link' href='index.cgi?action=login'>Logga in</a>
+        {% endif %}
+      </li>
+      #}
+      <li class='nav-item my-auto' id='cart'><a class='nav-link' href='index.cgi?action=cart'>
+        <i class='fas fa-shopping-cart'></i>&nbsp;Kundvagn (<span class="cart_size">0</span>)</a></li>
+      </ul>
+    </div>
+  {% endblock %}
+</nav>
+</div>
+
+
+<div class="main-wrap">
+{% block main %}
+
+{% endblock %}
+</div>
+
+<div class="footer-wrap">
+  <footer class="d-flex justify-content-center bg-light border border-left-0 border-right-0 border-bottom-0">
+{% block footer %}
+    <div class="p-4 m-4 w-75">&copy; Fredrik Erlandsson, Christian Nordahl</div>
+{% endblock %}
+  </footer>
+</div>
+
+</body>
+</html>

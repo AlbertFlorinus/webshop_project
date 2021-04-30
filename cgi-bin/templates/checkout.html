@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Categories{% endblock %}
+{% block main %}
+<div class="d-flex flex-row justify-content-center p-2">
+  <div class="home w-75">
+    Vi har tagit emot din order och den kommer levereras inom 3 timmar till {{ address }}.
+  </div>
+</div>
+<script>$(function() {emptyCart();});</script>
+{% endblock %}

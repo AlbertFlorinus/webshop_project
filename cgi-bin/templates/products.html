@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Products{% endblock %}
+{% block main %}
+<div class="d-flex flex-row justify-content-center mt-4">
+    <div class="w-75">
+    <table class="table border mb-4">
+    <thead>
+        <tr>
+            <th scope="col" class="border-bottom-0">Tillverkare</th>
+            <th scope="col" class="border-bottom-0">Namn</th>
+            <th scope="col" class="border-bottom-0">Storlek</th>
+            <th scope="col" class="border-bottom-0">Pris</th>
+            <th scope="col" class="border-bottom-0">F&auml;rg</th>
+            <th scope="col" class="border-bottom-0"></th>
+        </tr>
+    </thead>
+    <tbody>
+
+{% for item in products %}
+  <tr >
+      <td>{{ item.brand }}</td>
+      <td>{{ item.type }} {{ item.subtype }}</td>
+      <td>{{ item.size }}</td>
+      <td>{{ item.price }}</td>
+      <td>{{ item.color }}</td>
+      <th scope="row"><button type="button" onclick="addToCart({{ item.id }})">K&ouml;p</button></th>
+  </tr>
+{% endfor %}
+    </tbody>
+    </table>
+
+    </div>
+</div>
+{% endblock %}

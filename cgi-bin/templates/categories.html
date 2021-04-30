@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Categories{% endblock %}
+{% block main %}
+<div class="d-flex flex-row justify-content-center p-2">
+  <div class="home w-75">
+
+{% for category in categories %}
+    <p class="h2 text-center mt-4">{{category.title}}</p>
+      <div class="row text-center mr-0 ml-0">
+  {%- for item in category.children %}
+        <div class="w-50 mt-3 mb-3 col-md-4">
+          <a class="mx-auto w-75 btn btn-lg btn-primary pt-4 pb-4 btn-block" href="index.cgi?action=subcategory&gender={{category.title}}&category={{item.name}}">{{ item.name }}</a>
+        </div>
+  {% endfor %}
+    </div>
+{% endfor %}
+  </div>
+</div>
+{% endblock %}
