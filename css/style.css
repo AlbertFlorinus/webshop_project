@@ -1,0 +1,128 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.main-wrap {
+    flex: 1 0 auto;
+}
+
+.footer {
+    flex-shrink: 0;
+}
+
+/* Centers login form on /user/login */
+
+.login .main-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.login fieldset {
+    width: 100%;
+}
+
+/* Centers login form on /user/create */
+
+.create .main-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.edit .main-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.buyMale .main-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.buyFemale .main-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.add .main-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.buy .main-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.buyMale fieldset {
+    width: 100%;
+}
+
+.buyFemale fieldset {
+    width: 100%;
+}
+
+.create fieldset {
+    width: 100%;
+}
+
+.edit fieldset {
+    width: 100%;
+}
+
+.buy fieldset {
+    width: 100%;
+}
+
+.add fieldset {
+    width: 100%;
+}
+
+.btn-light-blue {
+    background: #3DA2E9;
+    color: #FFF;
+    border-color: #007BFF;
+}
+
+.btn-light-blue:hover {
+    color: #FFF;
+    background-color: #1985F9;
+    border-color: #0062CC;
+}
+
+#addToCartComplete {
+    height: 20px;
+}
+
+.removeFromCart {
+    color: red;
+}
+
+.removeButton {
+    background: none;
+    color: red;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+
+.cartButtons {
+    background: none;
+    color: blue;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.fa-minus::before {
+    padding-left: 0.5em;
+}
+
+.fa-plus::before {
+    padding-right: 0.5em;
+}
