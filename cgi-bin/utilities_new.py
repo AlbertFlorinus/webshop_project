@@ -1,58 +1,54 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import time
-
-def timer(func):
-    def wrapper(_):
-        before = time.time()
-        func()
-        print("Function took:", time.time() - before, "seconds")
-    return wrapper
-
 import pandas as pd
 from os import path
 from inspect import currentframe, getfile
+from setup_sql import engine
+from performance_test import timer
+
+engine = engine("Albert100")
 
 cmd_folder = path.realpath(
     path.abspath(path.split(getfile(currentframe()))[0])) + '/'
 
 @timer
+def get_products_filtered_sql(categories = None):
+    if categories is not None:
+        #generating query
+        query = "select * from products where ("
+        count = 0
+        for i, j in zip(categories.keys(), categories.values()):
+            count += 1
+            query += i
+            query += " = "
+            query += f'"{j}"'
+            if count < len(categories.keys()):
+                query += " and "
+        query += ")"
+
+    else:
+        query = "select * from products"
+
+    data = engine.execute(query).fetchall()
+
+    #converting to legacy utilities output
+    data = [dict(row) for j, row in enumerate(data)]
+    for i in range(len(data)):
+        data[i].pop("index")
+    
+    return data
+
+@timer
 def get_products_filtered(categories=None):
-    """
-    Indata
-    Antingen skickas None in (pythons version av NULL) via categories och då
-    skall alla produkter hämtas. Om categories inte är None, skickas en
-    dictionary in med gender, type och subtype. Gender är plaggets målgrupps
-    kön, type representerar huvudkategorin, subtype subkategorin.
-
-    Returdata
-    En lista av produkter. Respektive produkts information finns i en
-    dictionary med följande nycklar:
-    id: Det unika artikelnumret
-    brand: Märket på produkten
-    type: Typ av plagg, huvudkategori.
-    subtype: Typ av plagg, subkategori
-    color: Plaggets färg
-    gender: Kön
-    price: Priset på plagget
-    size: Storleken på plagget
-
-    Exempelvis:
-    [{'id': 1, 'brand': 'WESC', 'type': 'Shirt, 'subtype': 'T-shirt',
-       'color': 'Red', 'gender': 'Female', 'price': 299, 'size': 'M'},
-    ...,
-    {'id': 443, 'brand': 'Cheap Monday', 'type': 'Pants, 'subtype': 'Jeans',
-     'color': 'Black', 'gender': 'Male', 'price': 449, 'size': 'S'}]
-    """
-
     df = pd.read_csv(cmd_folder + 'data/Products.csv')
+    #df = pd.read_sql("products", con=engine)
+    
     if categories is not None:
         for category in categories.keys():
             df = df[df[category] == categories[category]]
     ''' SQL '''
-
+    #print(df)
     return df.to_dict('records')
-
 
 def get_products_search(values):
     """
@@ -83,10 +79,33 @@ def get_products_search(values):
     """
 
     df = pd.read_csv(cmd_folder + 'data/Products.csv')
+    #df = pd.read_sql("products", con=engine)
     df = df[df['brand'].str.contains('(?i)' + '|'.join(values))]
     ''' SQL '''
 
     return df.to_dict('records')
+
+
+def get_products_ids_sql(ids):
+    #generating query
+    query = "select * from products where ("
+    count = 0
+    for i in ids:
+        count += 1
+        query += "id"
+        query += " = "
+        query += str(i)
+        if count < len(ids):
+            query += " or "
+    query += ")"
+    data = engine.execute(query).fetchall()
+    #converting to legacy utilities output
+ 
+    data = [dict(row) for j, row in enumerate(data)]
+    for i in range(len(data)):
+        data[i].pop("index")
+
+    return data
 
 
 def get_products_ids(ids):
@@ -116,6 +135,7 @@ def get_products_ids(ids):
     """
 
     df = pd.read_csv(cmd_folder + 'data/Products.csv')
+    #df = pd.read_sql("products", con=engine)
     df = df.loc[df['id'].isin(ids)]
     ''' SQL '''
 
@@ -139,7 +159,8 @@ def get_categories():
                                    {'url': '', 'name': 'Väskor'}]}]
     """
 
-    df = pd.read_csv(cmd_folder + 'data/Products.csv')
+    #df = pd.read_csv(cmd_folder + 'data/Products.csv')
+    df = pd.read_sql("products", con=engine)
     genders = df['gender'].unique()
     types = [
         df[(df['gender'] == genders[0])]['type'].unique().tolist(),
@@ -185,7 +206,8 @@ def get_subcategories(gender, category):
         [{'url': '', 'name': 'T-shirts'}, {'url': '', 'name': 'Linnen'}]}]
     """
 
-    df = pd.read_csv(cmd_folder + 'data/Products.csv')
+    #df = pd.read_csv(cmd_folder + 'data/Products.csv')
+    df = pd.read_sql("products", con=engine)
     types = df[(df['gender'] == gender)
                & (df['type'] == category)]['subtype'].unique().tolist()
     children = [{'url': '', 'name': name} for name in types]
@@ -211,7 +233,8 @@ def write_order(order):
         produkt 3.
     """
 
-    df_orders = pd.read_csv(cmd_folder + 'data/Orders.csv')
+    #df_orders = pd.read_csv(cmd_folder + 'data/Orders.csv')
+    df_orders = pd.read_sql("orders", con=engine)
     # Get new order ID
     orderID = df_orders['orderid'].max() + 1
     # Grab the products id number and the amount of each product
@@ -233,7 +256,7 @@ def write_order(order):
     town = order['town']
 
     # Write the actual order
-    df_products = pd.read_csv(cmd_folder + 'data/Products.csv')
+    df_products = pd.read_sql("products", con=engine)
     for item in items:
         product = df_products[df_products['id'] == item['id']].to_dict(
             'records')[0]
@@ -245,6 +268,35 @@ def write_order(order):
         ]
     df_orders.to_csv(cmd_folder + 'data/Orders.csv', index=False, encoding='utf-8')
 
+def get_20_most_popular_sql():
+    query = "select * from orders order by amount desc"
+    data = engine.execute(query).fetchall()
+
+    data = [dict(row) for j, row in enumerate(data)]
+    for i in range(len(data)):
+        data[i].pop("index")
+
+    data = data[0:20]
+
+
+    count = 0
+    query2 = "select * from products where ("
+    for i in data:
+        count += 1
+        query2 += "id"
+        query2 += " = "
+        query2 += str(i["id"])
+        if count < len(data):
+            query2 += " or "
+    query2 += ")"
+
+    data2 = engine.execute(query2).fetchall()
+    data2 = [dict(row) for j, row in enumerate(data2)]
+    for i in range(len(data2)):
+        #data2[i].pop("index")
+        pass
+
+    return data2
 
 def get_20_most_popular():
     """
@@ -268,39 +320,36 @@ def get_20_most_popular():
      'subtype': 'Jeans', 'color': 'Black', 'gender': 'Male', 'price': 449,
      'size': 'S'}]
     """
-
-    df = pd.read_csv(cmd_folder + 'data/Orders.csv')
+    df = pd.read_sql("orders", con=engine)
     top20_ids = df.groupby(['id']).sum().loc[:, ['amount']].sort_values(
         'amount', ascending=False).iloc[:20].index.tolist()
-    df = pd.read_csv(cmd_folder + 'data/Products.csv')
+    df = pd.read_sql("products", con=engine)
 
     return df.iloc[top20_ids, :].to_dict('records')
 
 
 def main():
-    test = get_products_filtered({'type': 'Bags', 'subtype': 'Leather bag'})
-    test = get_products_ids([1,2,3])
-    # test = get_categories()
+    #test = get_products_filtered_sql({'type': 'Bags', 'subtype': 'Leather bag', 'color': 'Blue', 'price': 199})
+    #test = get_products_filtered({'type': 'Bags', 'subtype': 'Leather bag', 'color': 'Blue', 'price': 199})
+    #test = get_products_ids([1,2,4])
+    #print(test)
+    #test = get_products_ids_sql([1,2,4])
+    #print("\n")
+    
+    #test = get_categories()
+    #print(test)
     # test = get_subcategories('Female', 'Bags')
-    # test = get_20_most_popular()
-    """
-    test = write_order({
-        'town':
-        'asad',
-        'name':
-        'öäåasd asd',
-        'items':
-        '[2160,2160,2160,2160,2160,2160,2160,2160,2160]',
-        'zipcode':
-        '123123',
-        'address':
-        'asd',
-        'email':
-        'asd'
-    })
-    """
+    test = get_20_most_popular()
+    for i in test:
+        print(i["id"])
+    print("\n next")
+    #print(test)
+    test2 = get_20_most_popular_sql()
+    for i in test2:
+        print(i["id"])
+   
+    #print(test2)
     # test = get_products_search(['jack', 'and', 'jones'])
-    print(test)
 
 
 if __name__ == '__main__':

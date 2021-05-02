@@ -1,15 +1,11 @@
 import time
 
 def timer(func):
-    def wrapper():
+    def wrapper(*args):
         before = time.time()
-        func()
+        func(*args)
         print("Function took:", time.time() - before, "seconds")
     return wrapper
 
-@timer
-def adder():
-    b = 0
-    for i in range(1,100):
-        b += b+i
-    print(b)
+test = [0,1,4,3]
+print(test[0:10])
