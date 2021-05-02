@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import time
+
+def timer(func):
+    def wrapper(_):
+        before = time.time()
+        func()
+        print("Function took:", time.time() - before, "seconds")
+    return wrapper
 
 import pandas as pd
 from os import path
@@ -8,6 +16,7 @@ from inspect import currentframe, getfile
 cmd_folder = path.realpath(
     path.abspath(path.split(getfile(currentframe()))[0])) + '/'
 
+@timer
 def get_products_filtered(categories=None):
     """
     Indata
@@ -269,11 +278,12 @@ def get_20_most_popular():
 
 
 def main():
-    # test = get_products_filtered({'type': 'Bags', 'subtype': 'Leather bag'})
+    test = get_products_filtered({'type': 'Bags', 'subtype': 'Leather bag'})
     # test = get_products_ids([1,2,3])
     # test = get_categories()
     # test = get_subcategories('Female', 'Bags')
     # test = get_20_most_popular()
+    """
     test = write_order({
         'town':
         'asad',
@@ -288,6 +298,7 @@ def main():
         'email':
         'asd'
     })
+    """
     # test = get_products_search(['jack', 'and', 'jones'])
     print(test)
 
