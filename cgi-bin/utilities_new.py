@@ -3,10 +3,11 @@
 import pandas as pd
 from os import path
 from inspect import currentframe, getfile
-from setup_sql import engine
+from setup_sql import engine, read_txtfile
 from performance_test import timer
 
-engine = engine("Albert100")
+password, db_name = read_txtfile()
+engine = engine(password)
 
 cmd_folder = path.realpath(
     path.abspath(path.split(getfile(currentframe()))[0])) + '/'
@@ -39,51 +40,43 @@ def get_products_filtered_sql(categories = None):
     return data
 
 @timer
-def get_products_filtered(categories=None):
-    df = pd.read_csv(cmd_folder + 'data/Products.csv')
-    #df = pd.read_sql("products", con=engine)
+def get_products_search_sql(values):
+    #get unique brands from mysql, use python to see if contains substring. how to do directly in sql?
+    query = "select distinct(brand) from products"
+    data = engine.execute(query).fetchall()
+    data = [list(row) for j, row in enumerate(data)]
+    unique_brands = [j.upper() for i in data for j in i]
+    results = []
+
+    for i in unique_brands:
+        if any(word.upper() in i for word in values):
+            results.append(i)
+
+    if len(results) != 0:
+        #check to prevent crash if bad search
+        #generating query...
+        query2 = "select * from products where ("
+        count = 0
+        for i in results:
+            count += 1
+            query2 += "brand"
+            query2 += " = "
+            query2 += f'"{i}"'
+            if count < len(results):
+                query2 += " or "
+        query2 += ")"
+
+        data2 = engine.execute(query2).fetchall()
+        data2 = [dict(row) for j, row in enumerate(data2)]
+        for i in range(len(data2)):
+            data2[i].pop("index")
     
-    if categories is not None:
-        for category in categories.keys():
-            df = df[df[category] == categories[category]]
-    ''' SQL '''
-    #print(df)
-    return df.to_dict('records')
+    else:
+        data2 = None
+    
+    return data2
+    
 
-def get_products_search(values):
-    """
-    Indata
-    En lista (array) utav strängar (enskilda ord) som skall matchas mot märket
-    på alla typer av produkter.
-
-    Returdata
-    En lista av produkter. Respektive produkts information finns i en
-    dictionary med följande nycklar:
-
-    id: Det unika artikelnumret
-    brand: Märket på produkten
-    type: Typ av plagg, huvudkategori.
-    subtype: Typ av plagg, subkategori
-    color: Plaggets färg
-    gender: Kön
-    price: Priset på plagget
-    size: Storleken på plagget
-
-    Exempelvis:
-    [{'id': 1, 'brand': 'WESC', 'type': 'Shirt, 'subtype': 'T-shirt',
-      'color': 'Red', 'gender': 'Female', 'price': 299, 'size': 'M'},
-    ...,
-    {'id': 443, 'brand': 'Cheap Monday', 'type': 'Pants, 'subtype': 'Jeans',
-     'color': 'Black', 'gender': 'Male', 'price': 449, 'size': 'S'},
-    ]
-    """
-
-    df = pd.read_csv(cmd_folder + 'data/Products.csv')
-    #df = pd.read_sql("products", con=engine)
-    df = df[df['brand'].str.contains('(?i)' + '|'.join(values))]
-    ''' SQL '''
-
-    return df.to_dict('records')
 
 
 def get_products_ids_sql(ids):
@@ -106,41 +99,6 @@ def get_products_ids_sql(ids):
         data[i].pop("index")
 
     return data
-
-
-def get_products_ids(ids):
-    """
-    Indata
-    En lista (array) av heltal som representerar artikelnummer på produkter.
-
-    Returdata
-    En lista av produkter. Respektive produkts information finns i en
-    dictionary med följande nycklar:
-
-    id: Det unika artikelnumret
-    brand: Märket på produkten
-    type: Typ av plagg, huvudkategori.
-    subtype: Typ av plagg, subkategori
-    color: Plaggets färg
-    gender: Kön
-    price: Priset på plagget
-    size: Storleken på plagget
-
-    Exempelvis:
-    [{'id': 1, 'brand': 'WESC', 'type': 'Shirt, 'subtype': 'T-shirt',
-      'color': 'Red', 'gender': 'Female', 'price': 299, 'size': 'M'},
-    ...,
-    {'id': 443, 'brand': 'Cheap Monday', 'type': 'Pants, 'subtype': 'Jeans',
-     'color': 'Black', 'gender': 'Male', 'price': 449, 'size': 'S'}]
-    """
-
-    df = pd.read_csv(cmd_folder + 'data/Products.csv')
-    #df = pd.read_sql("products", con=engine)
-    df = df.loc[df['id'].isin(ids)]
-    ''' SQL '''
-
-    return df.to_dict('records')
-
 
 def get_categories():
     """
@@ -269,6 +227,12 @@ def write_order(order):
     df_orders.to_csv(cmd_folder + 'data/Orders.csv', index=False, encoding='utf-8')
 
 def get_20_most_popular_sql():
+    query = "select products.id, products.brand, products.type, products.subtype, products.color, products.gender,  products.price, products.size from products join orders on products.id = orders.id order by orders.amount desc limit 20"
+    data = engine.execute(query).fetchall()
+    data = [dict(row) for j, row in enumerate(data)]
+    return data
+
+def get_20_most_popular_sql_depr():
     query = "select * from orders order by amount desc"
     data = engine.execute(query).fetchall()
 
@@ -277,7 +241,6 @@ def get_20_most_popular_sql():
         data[i].pop("index")
 
     data = data[0:20]
-
 
     count = 0
     query2 = "select * from products where ("
@@ -298,35 +261,6 @@ def get_20_most_popular_sql():
 
     return data2
 
-def get_20_most_popular():
-    """
-    Returdata
-    En lista av de 20 produkter som är mest sålda i webshopen.
-    Respektive produkts information finns i en dictionary med följande nycklar:
-    id: Det unika artikelnumret
-    brand: Märket på produkten
-    type: Typ av plagg, huvudkategori.
-    subtype: Typ av plagg, subkategori
-    color: Plaggets färg
-    gender: Kön
-    price: Priset på plagget
-    size: Storleken på plagget
-
-    Exempelvis:
-    [{'id': 1, 'brand': 'WESC', 'type': 'Shirt, 'subtype': 'T-shirt',
-      'color': 'Red', 'gender': 'Female', 'price': 299, 'size': 'M'},
-    ...,
-    {'id': 443, 'brand': 'Cheap Monday', 'type': 'Pants,
-     'subtype': 'Jeans', 'color': 'Black', 'gender': 'Male', 'price': 449,
-     'size': 'S'}]
-    """
-    df = pd.read_sql("orders", con=engine)
-    top20_ids = df.groupby(['id']).sum().loc[:, ['amount']].sort_values(
-        'amount', ascending=False).iloc[:20].index.tolist()
-    df = pd.read_sql("products", con=engine)
-
-    return df.iloc[top20_ids, :].to_dict('records')
-
 
 def main():
     #test = get_products_filtered_sql({'type': 'Bags', 'subtype': 'Leather bag', 'color': 'Blue', 'price': 199})
@@ -339,18 +273,12 @@ def main():
     #test = get_categories()
     #print(test)
     # test = get_subcategories('Female', 'Bags')
-    test = get_20_most_popular()
-    for i in test:
-        print(i["id"])
-    print("\n next")
-    #print(test)
-    test2 = get_20_most_popular_sql()
-    for i in test2:
-        print(i["id"])
+    #test = get_20_most_popular()
    
-    #print(test2)
-    # test = get_products_search(['jack', 'and', 'jones'])
-
+    #print(test)
+    test = get_products_search_sql(["Jack", "and", "Jones"])
+    #print(len(test))
+    #print(test)
 
 if __name__ == '__main__':
     main()
