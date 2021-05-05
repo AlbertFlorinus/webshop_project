@@ -75,8 +75,6 @@ def get_products_search_sql(values):
         data2 = None
     
     return data2
-    
-
 
 
 def get_products_ids_sql(ids):
