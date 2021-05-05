@@ -7,12 +7,12 @@ from setup_sql import engine, read_txtfile
 from performance_test import timer
 
 password, db_name = read_txtfile()
-engine = engine(password)
+engine = engine(password, db_name)
 
 cmd_folder = path.realpath(
     path.abspath(path.split(getfile(currentframe()))[0])) + '/'
 
-@timer
+
 def get_products_filtered_sql(categories = None):
     if categories is not None:
         #generating query
@@ -39,7 +39,7 @@ def get_products_filtered_sql(categories = None):
     
     return data
 
-@timer
+
 def get_products_search_sql(values):
     #get unique brands from mysql, use python to see if contains substring. how to do directly in sql?
     query = "select distinct(brand) from products"
@@ -171,7 +171,6 @@ def get_subcategories(gender, category):
     ''' SQL '''
 
     return result
-
 
 def write_order(order):
     """

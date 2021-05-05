@@ -10,7 +10,7 @@ def timer(func):
         print("Function took:", time.time() - before, "seconds")
     return wrapper
 
-def engine(password, db_name = "webshop_back", port = 3306):
+def engine(password, db_name, port = 3306):
     engine = create_engine(f"mysql+pymysql://root:{password}@localhost:{port}/{db_name}")
     return engine
 
@@ -43,9 +43,9 @@ def csv_to_sql(password, db_name = "webshop_back", port = 3306):
     df.to_sql('orders', con=engine)
 
 if __name__ == "__main__":
-    #password = str(input("password: "))
-    #db_name = "webshop_back"
-    password, db_name = read_txtfile()
-    #create_txtfile(password, db_name)
-    #csv_to_sql(password)
-
+    try:
+        password, db_name = read_txtfile()
+    except:
+        password = str(input("password: "))
+        db_name = str(input("name of db: "))
+        create_txtfile(password, db_name)
