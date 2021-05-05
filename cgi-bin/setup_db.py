@@ -14,8 +14,8 @@ def csv_to_sql(password, db_name, tbl_name, port = 3306):
 if __name__ == "__main__":
     password = str(input("password: "))
     db_name = str(input("db: "))
-    tbl_name = str("table_name: ")
+    tbl_name = str(input("table_name: "))
 
     engine = engine(password, db_name)
     csv_to_sql(password, db_name, tbl_name)
-    
+
