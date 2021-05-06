@@ -269,11 +269,12 @@ def get_20_most_popular():
 
 
 def main():
-    # test = get_products_filtered({'type': 'Bags', 'subtype': 'Leather bag'})
+    #test = get_products_filtered({'type': 'Bags', 'subtype': 'Leather bag'})
     # test = get_products_ids([1,2,3])
-    # test = get_categories()
+    test = get_categories()
     # test = get_subcategories('Female', 'Bags')
     # test = get_20_most_popular()
+    """
     test = write_order({
         'town':
         'asad',
@@ -288,6 +289,7 @@ def main():
         'email':
         'asd'
     })
+    """
     # test = get_products_search(['jack', 'and', 'jones'])
     print(test)
 
