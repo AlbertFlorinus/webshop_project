@@ -34,8 +34,6 @@ def get_products_filtered_sql(categories = None):
 
     #converting to legacy utilities output
     data = [dict(row) for j, row in enumerate(data)]
-    for i in range(len(data)):
-        data[i].pop("index")
     
     return data
 
@@ -68,8 +66,6 @@ def get_products_search_sql(values):
 
         data2 = engine.execute(query2).fetchall()
         data2 = [dict(row) for j, row in enumerate(data2)]
-        for i in range(len(data2)):
-            data2[i].pop("index")
     
     else:
         data2 = None
@@ -93,8 +89,6 @@ def get_products_ids_sql(ids):
     #converting to legacy utilities output
  
     data = [dict(row) for j, row in enumerate(data)]
-    for i in range(len(data)):
-        data[i].pop("index")
 
     return data
 
@@ -234,8 +228,6 @@ def get_20_most_popular_sql_depr():
     data = engine.execute(query).fetchall()
 
     data = [dict(row) for j, row in enumerate(data)]
-    for i in range(len(data)):
-        data[i].pop("index")
 
     data = data[0:20]
 
@@ -252,15 +244,12 @@ def get_20_most_popular_sql_depr():
 
     data2 = engine.execute(query2).fetchall()
     data2 = [dict(row) for j, row in enumerate(data2)]
-    for i in range(len(data2)):
-        #data2[i].pop("index")
-        pass
 
     return data2
 
 
 def main():
-    #test = get_products_filtered_sql({'type': 'Bags', 'subtype': 'Leather bag', 'color': 'Blue', 'price': 199})
+    test = get_products_filtered_sql({'type': 'Bags', 'subtype': 'Leather bag', 'color': 'Blue', 'price': 199})
     #test = get_products_filtered({'type': 'Bags', 'subtype': 'Leather bag', 'color': 'Blue', 'price': 199})
     #test = get_products_ids([1,2,4])
     #print(test)
@@ -272,8 +261,8 @@ def main():
     # test = get_subcategories('Female', 'Bags')
     #test = get_20_most_popular()
    
-    #print(test)
-    test = get_products_search_sql(["Jack", "and", "Jones"])
+    print(test)
+    #test = get_products_search_sql(["Jack", "and", "Jones"])
     #print(len(test))
     #print(test)
 
