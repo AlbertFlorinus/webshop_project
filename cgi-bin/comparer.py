@@ -8,12 +8,16 @@ cmd_folder = path.realpath(
     path.abspath(path.split(getfile(currentframe()))[0])) + '/'
 
 test1 = {'type': 'Bags', 'subtype': 'Leather bag', 'color': 'Blue', 'price': 199}
-test2 = [1,2,3]
-a = get_products_filtered_sql(test1)
-b = get_products_filtered(test1)
+test2 = ["Jack", "and", "Jones"]
+test3 = [1,2,3]
+#a = get_products_filtered_sql(test1)
+#b = get_products_filtered(test1)
 
-c = get_products_search_sql(test2)
-d = get_products_search(test2)
+#c = get_products_search_sql(test2)
+#d = get_products_search(test2)
 
-if c == d:
+#f = get_products_ids_sql(test3)
+#g = get_products_ids(test3)
+
+if f == g:
     print("yes")
