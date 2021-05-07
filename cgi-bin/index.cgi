@@ -111,8 +111,6 @@ def cart():
                 try:
                     #gör till lista, detta borde inte behövas...
                     value = [*map(int, cart_data.strip("[]").split("%2C"))]
-                    #value = [cart_data.strip("[]").split("%2C")]
-                    #cart = get_products_ids(value)
 
                     cart, temp_var = get_products_ids_sql(value)
 
@@ -124,13 +122,15 @@ def cart():
                     pass
         
         #price sum fix
-        #price_total = sum([i["price"] for i in cart])
-
+        try:
+            value = testing
+        except:
+            value = [0]
         template = env.get_template('cart.html')
         print(template.render(
             title=f'BestBuy (cart)',
             cart=cart,
-            price=sum(testing),
+            price=sum(value),
         ))
         """print(template.render(title='BestBuy (cart)', cart=[
             {'brand': 'brand', 'name': 'Name', 'size': 'XXXL', 'price': 2323, 'color': "red"},
