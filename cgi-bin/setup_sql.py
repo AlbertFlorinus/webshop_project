@@ -1,14 +1,6 @@
 import pandas as pd
 from tkinter.filedialog import askopenfilename
 from sqlalchemy import create_engine
-import time
-
-def timer(func):
-    def wrapper(*args):
-        before = time.time()
-        func(*args)
-        print("Function took:", time.time() - before, "seconds")
-    return wrapper
 
 def engine(password, db_name, port = 3306):
     engine = create_engine(f"mysql+pymysql://root:{password}@localhost:{port}/{db_name}")
@@ -36,11 +28,6 @@ def read_txtfile():
     password = creds[0]
     db_name = creds[1]
     return password, db_name
-
-def csv_to_sql(password, db_name = "webshop_back", port = 3306):
-    engine = create_engine(f"mysql+pymysql://root:{password}@localhost:{port}/{db_name}")
-    df = pd.read_csv(askopenfilename())
-    df.to_sql('orders', con=engine)
 
 if __name__ == "__main__":
     try:
