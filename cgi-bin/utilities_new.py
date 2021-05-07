@@ -4,34 +4,7 @@
 from os import path
 from inspect import currentframe, getfile
 from sqlalchemy import create_engine
-import time
-
-def engine(password, db_name, port = 3306):
-    engine = create_engine(f"mysql+pymysql://root:{password}@localhost:{port}/{db_name}")
-    return engine
-
-def create_txtfile(password, db_name):
-    """
-    Creates a txt file containing database name and password
-    """
-    L = [f"{password}\n", f"{db_name}\n"]
-    # Writing to file
-    with open("pass_name.txt", "w") as f:
-        f.writelines(L)
-
-def read_txtfile():
-    """
-    opens the txt file and returns content
-    """
-    # Opening file
-    with open("pass_name.txt", "r") as f:
-        creds = []
-        for line in f:
-            creds.append(line.strip())
-
-    password = creds[0]
-    db_name = creds[1]
-    return password, db_name
+from setup_sql import engine, read_txtfile
 
 
 password, db_name = read_txtfile()
@@ -107,7 +80,7 @@ def get_products_ids_sql(ids):
         query += "id"
         query += " = "
         query += str(i)
-        if count < len(ids):
+        if count < len(list(ids)):
             query += " or "
     query += ")"
     data = engine.execute(query).fetchall()

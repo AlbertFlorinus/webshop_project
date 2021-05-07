@@ -15,6 +15,9 @@ from utilities import (get_20_most_popular, get_categories,
                        get_products_filtered, get_products_ids,
                        get_products_search, get_subcategories, write_order)
 
+from utilities_new import password, db_name, engine
+from utilities_new import (get_20_most_popular_sql, get_products_filtered_sql, get_products_ids_sql, get_products_search_sql)
+
 sys.stdout = getwriter("utf-8")(sys.stdout.detach())
 cgitb.enable()  # Enable debugging
 
@@ -29,9 +32,13 @@ env.globals = {'path': '../' if 'cgi-bin' in cmd_folder else ''}
 def products(limits, filters=None):
     template = env.get_template('products.html')
     if filters is None:
-        data = get_20_most_popular()
+        #data = get_20_most_popular()
+        data = get_20_most_popular_sql()
+
     else:
-        data = get_products_filtered(filters)
+        #data = get_products_filtered(filters)
+        data = get_products_filtered_sql(filters)
+
     # Limit the length of the output to 20, otherwise its horrendous.
     if len(data) > 20:
         data = data[:20]
@@ -99,13 +106,22 @@ def cart():
                 ]
             }.get('cart')
             if cart_data:
+                #cart_data.strip("[]").split("%2C") ger en lista med ett element vilket är en str av produkt id
+
                 value = map(int, cart_data.strip("[]").split("%2C"))
-                cart = get_products_ids(value)
+                #value = [cart_data.strip("[]").split("%2C")]
+                
+                #cart = get_products_ids(value)
+                cart = get_products_ids_sql(value)
+        
+        #price sum fix
+        price_total = sum([i["price"] for i in cart])
+
         template = env.get_template('cart.html')
         print(template.render(
-            title='BestBuy (cart)',
+            title=f'BestBuy ({value})',
             cart=cart,
-            price=23,
+            price=price_total,
         ))
         """print(template.render(title='BestBuy (cart)', cart=[
             {'brand': 'brand', 'name': 'Name', 'size': 'XXXL', 'price': 2323, 'color': "red"},
@@ -140,7 +156,9 @@ def checkout():
 def search(words):
     try:
         template = env.get_template('products.html')
-        data = get_products_search(words)
+        #data = get_products_search(words)
+        data = get_products_search_sql(words)
+
         print(template.render(
             title='BestBuy',
             products=data,
