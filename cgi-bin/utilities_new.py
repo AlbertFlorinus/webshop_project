@@ -74,21 +74,25 @@ def get_products_search_sql(values):
 def get_products_ids_sql(ids):
     #generating query
     query = "select * from products where ("
-    count = 0
+    counter = 0
+    print(len(ids))
     for i in ids:
-        count += 1
+        counter += 1
         query += "id"
         query += " = "
         query += str(i)
-        if count < len(list(ids)):
+        if counter < len(ids):
             query += " or "
+        
     query += ")"
-    data = engine.execute(query).fetchall()
+    print(query)
+    data51 = engine.execute(query).fetchall()
     #converting to legacy utilities output
  
-    data = [dict(row) for j, row in enumerate(data)]
+    data51 = [dict(row) for j, row in enumerate(data51)]
 
-    return data
+    return data51
+
 
 def get_20_most_popular_sql():
     query = "select products.id, products.brand, products.type, products.subtype, products.color, products.gender,  products.price, products.size from products join orders on products.id = orders.id order by orders.amount desc limit 20"

@@ -106,20 +106,24 @@ def cart():
                 ]
             }.get('cart')
             if cart_data:
+                # lagt till try för att lösa buggen "invalid blablabl for int base 10 i cart"
                 #cart_data.strip("[]").split("%2C") ger en lista med ett element vilket är en str av produkt id
+                try:
+                    #gör till lista, detta borde inte behövas...
+                    value = [*map(int, cart_data.strip("[]").split("%2C"))]
+                    #value = [cart_data.strip("[]").split("%2C")]
+                    #cart = get_products_ids(value)
 
-                value = map(int, cart_data.strip("[]").split("%2C"))
-                #value = [cart_data.strip("[]").split("%2C")]
-                
-                #cart = get_products_ids(value)
-                cart = get_products_ids_sql(value)
+                    cart = get_products_ids_sql(value)
+                except:
+                    pass
         
         #price sum fix
         price_total = sum([i["price"] for i in cart])
 
         template = env.get_template('cart.html')
         print(template.render(
-            title=f'BestBuy ({value})',
+            title=f'BestBuy ({cart})',
             cart=cart,
             price=price_total,
         ))
