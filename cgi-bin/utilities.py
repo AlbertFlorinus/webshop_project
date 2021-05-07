@@ -274,6 +274,7 @@ def main():
     # test = get_categories()
     # test = get_subcategories('Female', 'Bags')
     # test = get_20_most_popular()
+    """
     test = write_order({
         'town':
         'asad',
@@ -289,7 +290,9 @@ def main():
         'asd'
     })
     # test = get_products_search(['jack', 'and', 'jones'])
-    print(test)
+    """
+    #print(test)
+    pass
 
 
 if __name__ == '__main__':
