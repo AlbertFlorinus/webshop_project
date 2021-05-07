@@ -26,6 +26,7 @@ function addToCart(item) {
     items.push(item);
   }
   console.log(items , ":" , index);
+  
   Cookies.set('cart', items);
   $('.cart_size').html(items.length);
   var count = items.filter(function(x){return x==item}).length;

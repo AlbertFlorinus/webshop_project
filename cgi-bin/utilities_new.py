@@ -6,6 +6,7 @@ from inspect import currentframe, getfile
 from sqlalchemy import create_engine
 from setup_sql import engine, read_txtfile
 
+from collections import Counter
 
 password, db_name = read_txtfile()
 engine = engine(password, db_name)
@@ -70,12 +71,16 @@ def get_products_search_sql(values):
     
     return data2
 
+def get_20_most_popular_sql():
+    query = "select products.id, products.brand, products.type, products.subtype, products.color, products.gender,  products.price, products.size from products join orders on products.id = orders.id order by orders.amount desc limit 20"
+    data = engine.execute(query).fetchall()
+    data = [dict(row) for j, row in enumerate(data)]
+    return data
 
 def get_products_ids_sql(ids):
     #generating query
     query = "select * from products where ("
     counter = 0
-    print(len(ids))
     for i in ids:
         counter += 1
         query += "id"
@@ -85,19 +90,19 @@ def get_products_ids_sql(ids):
             query += " or "
         
     query += ")"
-    print(query)
     data51 = engine.execute(query).fetchall()
+
     #converting to legacy utilities output
  
     data51 = [dict(row) for j, row in enumerate(data51)]
 
-    return data51
+    #generating multiplies dict for summing price of type {product_id: amount_ordered} like {1240:4, 12:3} would be 4 items of id 1240 and 3 items of id 12.
+    multis = {}
+    for index, item in enumerate(ids):
+        multis[index] = item
 
+    multis = dict(Counter(multis.values()))
 
-def get_20_most_popular_sql():
-    query = "select products.id, products.brand, products.type, products.subtype, products.color, products.gender,  products.price, products.size from products join orders on products.id = orders.id order by orders.amount desc limit 20"
-    data = engine.execute(query).fetchall()
-    data = [dict(row) for j, row in enumerate(data)]
-    return data
+    return data51, multis
 
 #python3 -m http.server --cgi 8000

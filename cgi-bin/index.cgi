@@ -114,18 +114,23 @@ def cart():
                     #value = [cart_data.strip("[]").split("%2C")]
                     #cart = get_products_ids(value)
 
-                    cart = get_products_ids_sql(value)
+                    cart, temp_var = get_products_ids_sql(value)
+
+                    testing = []
+                    for i in cart:
+                        temp = i["price"]*temp_var[i["id"]]
+                        testing.append(temp)
                 except:
                     pass
         
         #price sum fix
-        price_total = sum([i["price"] for i in cart])
+        #price_total = sum([i["price"] for i in cart])
 
         template = env.get_template('cart.html')
         print(template.render(
-            title=f'BestBuy ({cart})',
+            title=f'BestBuy (cart)',
             cart=cart,
-            price=price_total,
+            price=sum(testing),
         ))
         """print(template.render(title='BestBuy (cart)', cart=[
             {'brand': 'brand', 'name': 'Name', 'size': 'XXXL', 'price': 2323, 'color': "red"},
