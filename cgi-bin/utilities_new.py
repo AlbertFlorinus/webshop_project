@@ -134,17 +134,13 @@ def get_subcategories_sql(gender, category):
     return result
     
 
-#inf = {'email': 'blabla@gmail.com', 'name': 'abbe kla', 'address': 'mine 24', 'zipcode': '15423', 'town': 'Stockholm', 'items': '[1230,10000, 1230]'}
-#inf2 = {'email': 'blabla@gmail.com', 'name': 'Olivia Smith', 'address': 'Skogsgatan 1', 'zipcode': '56776', 'town': 'Lund', 'items': '[1230,10000, 1230]'}
-
-def write_order(inf):
+def write_order_sql(inf):
     query = f"select * from customers"
     data = engine.execute(query).fetchall()
     data = [dict(row) for j, row in enumerate(data)]
 
     first_name, last_name = inf["name"].split()
     kund  = {"firstname": first_name, "lastname": last_name, "street": inf["address"], "city": inf["town"],  "zipcode": int(inf["zipcode"])}
-    #print(kund)
     kund_inf = [i for i in kund.values()]
 
     storage = [list(i.values()) for i in data]

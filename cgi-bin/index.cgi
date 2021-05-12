@@ -153,8 +153,7 @@ def checkout():
             'town': form.getvalue('town'),
             'items': form.getvalue('items')
         }
-        print(order)
-        #write_order(order)
+        
         write_order_sql(order)
 
         template = env.get_template('checkout.html')
