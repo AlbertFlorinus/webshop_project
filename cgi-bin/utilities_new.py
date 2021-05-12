@@ -105,4 +105,30 @@ def get_products_ids_sql(ids):
 
     return data51, multis
 
+def get_categories_sql():
+    gender_query = 'select distinct(gender) from products' # Queries the unique genders from DB
+    gender_objects = engine.execute(gender_query).fetchall()
+    gender_list = [i.values()[0] for i in gender_objects]
+    
+    product_query = [f"select distinct(type) from products where gender = '{g}'" for g in gender_list]
+    product_objects = [engine.execute(i).fetchall() for i in product_query]
+    
+    result = []
+    
+    for i, gender in enumerate(gender_list):
+        gender_dict = {}
+        gender_dict['title'] = gender
+        gender_dict['children'] = [{'url': '', 'name': f'{category[0]}'} for category in product_objects[i]]
+        result.append(gender_dict)
+    return result
+
+def get_subcategories_sql(gender, category):
+    query = f"select distinct(subtype) from products where gender = '{gender}' and `type` = '{category}'"
+    subtype_objects = engine.execute(query).fetchall()
+    subtype_data = [i[0] for i in subtype_objects]
+    
+    result = [{'gender': gender, 'category': category, 'children': [{'url': '', 'name': subtype} for subtype in subtype_data]}]
+    
+    return result
+    
 #python3 -m http.server --cgi 8000
