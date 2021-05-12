@@ -26,3 +26,9 @@ orderid,firstname,lastname,street,city,zipcode,id,brand,type,subtype,color,gende
 12,Lucia,Garcia,Bakgatan 1,Skogen,23423,35000,Abercrombie and Fitch,Shirts,Sweatshirt,Red,Female,299,M,5
 13,öäåasd,asd,asd,asad,123123,2160,Jack and Jones,Pants,Jeans,Red,Female,199,XS,9
 14,Albert,,minerva 22,karlskrona,12323,10000,GANT,Jackets,Winter jacket,Black,Male,999,XL,3
+15,Johan,Falk,Krebo 22,Karlskrona,12345,1230,Jack and Jones,Shirts,Cardigan,White,Female,299,XS,2
+16,Zlatan,Ibrahimovic,Krebo 24,Malmö,12343,10000,GANT,Jackets,Winter jacket,Black,Male,999,XL,1
+16,Zlatan,Ibrahimovic,Krebo 24,Malmö,12343,1230,Jack and Jones,Shirts,Cardigan,White,Female,299,XS,1
+17,abbe,kla,mine 24,Stockholm,15423,10000,GANT,Jackets,Winter jacket,Black,Male,999,XL,1
+17,abbe,kla,mine 24,Stockholm,15423,1230,Jack and Jones,Shirts,Cardigan,White,Female,299,XS,1
+18,Alice,Andersson,Testgatan 1,Ankeborg,12312,1230,Jack and Jones,Shirts,Cardigan,White,Female,299,XS,4

@@ -11,12 +11,16 @@ from os import path
 from jinja2 import Environment, FileSystemLoader
 
 # Import our utilitiy functions
+"""
 from utilities import (get_20_most_popular, get_categories,
                        get_products_filtered, get_products_ids,
                        get_products_search, get_subcategories, write_order)
+"""
+
+from utilities import write_order
 
 from utilities_new import password, db_name, engine
-from utilities_new import (get_20_most_popular_sql, get_products_filtered_sql, get_products_ids_sql, get_products_search_sql)
+from utilities_new import (get_20_most_popular_sql, get_products_filtered_sql, get_products_ids_sql, get_products_search_sql, get_categories_sql, get_subcategories_sql, write_order_sql)
 
 sys.stdout = getwriter("utf-8")(sys.stdout.detach())
 cgitb.enable()  # Enable debugging
@@ -57,7 +61,7 @@ def products(limits, filters=None):
 
 def categories(limits):
     template = env.get_template('categories.html')
-    data = get_categories()
+    data = get_categories_sql()
 
     try:
         # print(template.render(title='BestBuy', categories=[
@@ -82,7 +86,7 @@ def categories(limits):
 # function with gender and main category as parameters
 def subcategories(limits, gender, category):
     template = env.get_template('subcategories.html')
-    data = get_subcategories(gender, category)
+    data = get_subcategories_sql(gender, category)
 
     try:
         print(template.render(
@@ -150,7 +154,9 @@ def checkout():
             'town': form.getvalue('town'),
             'items': form.getvalue('items')
         }
-        write_order(order)
+        print(order)
+        #write_order(order)
+        write_order_sql(order)
 
         template = env.get_template('checkout.html')
         print(

@@ -201,6 +201,8 @@ def write_order(order):
         köpt 1 styck av produkt 1, 2 styck av produkt 2, och 1 styck av
         produkt 3.
     """
+    print(type(order))
+    print(order)
 
     df_orders = pd.read_csv(cmd_folder + 'data/Orders.csv')
     # Get new order ID
@@ -274,6 +276,7 @@ def main():
     # test = get_categories()
     # test = get_subcategories('Female', 'Bags')
     # test = get_20_most_popular()
+    """
     test = write_order({
         'town':
         'asad',
@@ -288,8 +291,10 @@ def main():
         'email':
         'asd'
     })
+    """
     # test = get_products_search(['jack', 'and', 'jones'])
-    print(test)
+    #print(test)
+    pass
 
 
 if __name__ == '__main__':

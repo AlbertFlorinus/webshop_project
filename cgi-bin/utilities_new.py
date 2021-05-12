@@ -8,6 +8,8 @@ from setup_sql import engine, read_txtfile
 
 from collections import Counter
 
+import ast
+
 password, db_name = read_txtfile()
 engine = engine(password, db_name)
 
@@ -131,4 +133,52 @@ def get_subcategories_sql(gender, category):
     
     return result
     
+
+inf = {'email': 'blabla@gmail.com', 'name': 'abbe kla', 'address': 'mine 24', 'zipcode': '15423', 'town': 'Stockholm', 'items': '[1230,10000, 1230]'}
+#inf2 = {'email': 'blabla@gmail.com', 'name': 'Olivia Smith', 'address': 'Skogsgatan 1', 'zipcode': '56776', 'town': 'Lund', 'items': '[1230,10000, 1230]'}
+
+def write_order(inf):
+    query = f"select * from customers"
+    data = engine.execute(query).fetchall()
+    data = [dict(row) for j, row in enumerate(data)]
+
+    first_name, last_name = inf["name"].split()
+    kund  = {"firstname": first_name, "lastname": last_name, "street": inf["address"], "city": inf["town"],  "zipcode": int(inf["zipcode"])}
+    #print(kund)
+    kund_inf = [i for i in kund.values()]
+
+    storage = [list(i.values()) for i in data]
+    for index, item in enumerate(storage):
+        storage[index] = item[1:]
+
+    if kund_inf not in storage:
+        query2 = f'insert into customers (firstname, lastname, street, city, zipcode) values ("{kund["firstname"]}", "{kund["lastname"]}", "{kund["street"]}", "{kund["city"]}", {kund["zipcode"]})'
+        engine.execute(query2)
+        cust_id = len(storage) + 1
+
+    else:
+        cust_id = storage.index(kund_inf) + 1
+        
+    #print(inf["items"])
+
+    bought = ast.literal_eval(inf["items"])
+    #print(bought)
+
+    multis = {}
+    for index, item in enumerate(bought):
+        multis[index] = item
+
+    multis = dict(Counter(multis.values()))
+
+    ordernum = engine.execute("select max(orderid) from orders").fetchall()
+
+    ordernum = ordernum[0][0] + 1
+
+    
+    for i in multis.keys():
+        query9 = f'insert into orders (customer_id, orderid, id, amount) values ({cust_id}, {ordernum}, {i}, {multis[i]})'
+        engine.execute(query9)
+        
+
+
 #python3 -m http.server --cgi 8000
