@@ -1,4 +1,3 @@
-import pandas as pd
 from tkinter.filedialog import askopenfilename
 from sqlalchemy import create_engine
 
