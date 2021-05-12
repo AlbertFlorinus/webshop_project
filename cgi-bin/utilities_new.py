@@ -69,7 +69,7 @@ def get_products_search_sql(values):
         data2 = [dict(row) for j, row in enumerate(data2)]
     
     else:
-        data2 = None
+        data2 = []
     
     return data2
 
