@@ -17,7 +17,6 @@ from utilities import (get_20_most_popular, get_categories,
                        get_products_search, get_subcategories, write_order)
 """
 
-from utilities import write_order
 
 from utilities_new import password, db_name, engine
 from utilities_new import (get_20_most_popular_sql, get_products_filtered_sql, get_products_ids_sql, get_products_search_sql, get_categories_sql, get_subcategories_sql, write_order_sql)

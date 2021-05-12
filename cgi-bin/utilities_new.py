@@ -134,7 +134,7 @@ def get_subcategories_sql(gender, category):
     return result
     
 
-inf = {'email': 'blabla@gmail.com', 'name': 'abbe kla', 'address': 'mine 24', 'zipcode': '15423', 'town': 'Stockholm', 'items': '[1230,10000, 1230]'}
+#inf = {'email': 'blabla@gmail.com', 'name': 'abbe kla', 'address': 'mine 24', 'zipcode': '15423', 'town': 'Stockholm', 'items': '[1230,10000, 1230]'}
 #inf2 = {'email': 'blabla@gmail.com', 'name': 'Olivia Smith', 'address': 'Skogsgatan 1', 'zipcode': '56776', 'town': 'Lund', 'items': '[1230,10000, 1230]'}
 
 def write_order(inf):
@@ -159,10 +159,7 @@ def write_order(inf):
     else:
         cust_id = storage.index(kund_inf) + 1
         
-    #print(inf["items"])
-
     bought = ast.literal_eval(inf["items"])
-    #print(bought)
 
     multis = {}
     for index, item in enumerate(bought):
