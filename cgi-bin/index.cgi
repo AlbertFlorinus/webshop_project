@@ -11,15 +11,9 @@ from os import path
 from jinja2 import Environment, FileSystemLoader
 
 # Import our utilitiy functions
-"""
-from utilities import (get_20_most_popular, get_categories,
-                       get_products_filtered, get_products_ids,
-                       get_products_search, get_subcategories, write_order)
-"""
 
-
-from utilities_new import password, db_name, engine
-from utilities_new import (get_20_most_popular_sql, get_products_filtered_sql, get_products_ids_sql, get_products_search_sql, get_categories_sql, get_subcategories_sql, write_order_sql)
+from utilities import password, db_name, engine
+from utilities import (get_20_most_popular_sql, get_products_filtered_sql, get_products_ids_sql, get_products_search_sql, get_categories_sql, get_subcategories_sql, write_order_sql)
 
 sys.stdout = getwriter("utf-8")(sys.stdout.detach())
 cgitb.enable()  # Enable debugging
